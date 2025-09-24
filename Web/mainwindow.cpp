@@ -7,24 +7,32 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 
-    view = new QWebEngineView(this);
-    view->setUrl(QUrl("https://www.google.com"));
-    setCentralWidget(view);
-
     resize(1200, 800);
+
+    tabWidget = new QTabWidget(this);
+    tabWidget->setTabsClosable(true);
+    setCentralWidget(tabWidget);
+
     QToolBar *toolbar = addToolBar("Navigation");
 
 
     QAction *backAction = toolbar->addAction("⟵");
-    connect(backAction, &QAction::triggered, view, &QWebEngineView::back);
-
+    connect(backAction, &QAction::triggered, this, [this] {
+        if (currentView()) currentView()->back();
+    });
 
     QAction *forwardAction = toolbar->addAction("⟶");
-    connect(forwardAction, &QAction::triggered, view, &QWebEngineView::forward);
-
+    connect(forwardAction, &QAction::triggered, this, [this] {
+        if (currentView()) currentView()->forward();
+    });
 
     QAction *reloadAction = toolbar->addAction("⟳");
-    connect(reloadAction, &QAction::triggered, view, &QWebEngineView::reload);
+    connect(reloadAction, &QAction::triggered, this, [this] {
+        if (currentView()) currentView()->reload();
+    });
+
+    QAction *newTabAction = toolbar->addAction("+");
+    connect(newTabAction, &QAction::triggered, this, &MainWindow::newTab);
 
 
     urlBar = new QLineEdit(this);
@@ -34,26 +42,48 @@ MainWindow::MainWindow(QWidget *parent)
     connect(urlBar, &QLineEdit::returnPressed, this, &MainWindow::navigateToUrl);
 
 
-    connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
+    connect(tabWidget, &QTabWidget::tabCloseRequested, this, [this](int index) {
+        QWidget *tab = tabWidget->widget(index);
+        tabWidget->removeTab(index);
+        delete tab;
+    });
+
+    newTab();
 }
 
 MainWindow::~MainWindow()
 {
 }
 
+void MainWindow::newTab()
+{
+    QWebEngineView *view = new QWebEngineView;
+    view->setUrl(QUrl("https://www.google.com"));
+
+    int index = tabWidget->addTab(view, "New Tab");
+    tabWidget->setCurrentIndex(index);
+
+    connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
+}
+
 void MainWindow::navigateToUrl()
 {
+    if (!currentView()) return;
+
     QString urlText = urlBar->text();
-
-
     if (!urlText.startsWith("http://") && !urlText.startsWith("https://")) {
         urlText.prepend("https://");
     }
 
-    view->setUrl(QUrl(urlText));
+    currentView()->setUrl(QUrl(urlText));
 }
 
 void MainWindow::updateUrlBar(const QUrl &url)
 {
     urlBar->setText(url.toString());
+}
+
+QWebEngineView* MainWindow::currentView() const
+{
+    return qobject_cast<QWebEngineView*>(tabWidget->currentWidget());
 }
