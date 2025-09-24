@@ -65,10 +65,16 @@ void MainWindow::newTab()
     tabWidget->setCurrentIndex(index);
 
     connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
-    connect(view, &QWebEngineView::titleChanged, this, [this, view](const QString &title) {
+    connect(view, &QWebEngineView::titleChanged, this, [this, view, index](const QString &title) {
         int idx = tabWidget->indexOf(view);
-        if (idx != -1)
-            tabWidget->setTabText(idx, title);
+        if (idx != -1) {
+            QString baseTitle = "Tab " + QString::number(idx + 1);
+            if (title.contains("Google", Qt::CaseInsensitive)) {
+                tabWidget->setTabText(idx, baseTitle);
+            } else {
+                tabWidget->setTabText(idx, title);
+            }
+        }
     });
 
 }
