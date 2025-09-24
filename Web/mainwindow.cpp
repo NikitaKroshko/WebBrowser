@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     view->setUrl(QUrl("https://www.google.com"));
     setCentralWidget(view);
 
-
+    resize(1200, 800);
     QToolBar *toolbar = addToolBar("Navigation");
 
 
