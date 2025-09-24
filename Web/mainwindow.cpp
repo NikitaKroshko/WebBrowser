@@ -65,6 +65,12 @@ void MainWindow::newTab()
     tabWidget->setCurrentIndex(index);
 
     connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
+    connect(view, &QWebEngineView::titleChanged, this, [this, view](const QString &title) {
+        int idx = tabWidget->indexOf(view);
+        if (idx != -1)
+            tabWidget->setTabText(idx, title);
+    });
+
 }
 
 void MainWindow::navigateToUrl()
