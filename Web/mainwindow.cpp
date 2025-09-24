@@ -68,7 +68,7 @@ void MainWindow::newTab()
     connect(view, &QWebEngineView::titleChanged, this, [this, view, index](const QString &title) {
         int idx = tabWidget->indexOf(view);
         if (idx != -1) {
-            QString baseTitle = "Tab " + QString::number(idx + 1);
+            QString baseTitle = "New Tab " + QString::number(idx + 1);
             if (title.contains("Google", Qt::CaseInsensitive)) {
                 tabWidget->setTabText(idx, baseTitle);
             } else {
