@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLineEdit>
 #include <QWebEngineView>
+#include <QTabWidget>
 
 class MainWindow : public QMainWindow
 {
