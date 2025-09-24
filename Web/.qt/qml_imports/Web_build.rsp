@@ -1,0 +1,9 @@
+-rootPath
+/Users/nikitakroshko/git_personal/WebBrowser/web
+-cmake-output
+-output-file
+/Users/nikitakroshko/git_personal/WebBrowser/Web/.qt/qml_imports/Web_build.cmake
+-importPath
+/Users/nikitakroshko/git_personal/WebBrowser/Web
+-importPath
+/Users/nikitakroshko/Qt/6.9.2/macos/qml
