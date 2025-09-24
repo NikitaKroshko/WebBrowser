@@ -60,7 +60,8 @@ void MainWindow::newTab()
     QWebEngineView *view = new QWebEngineView;
     view->setUrl(QUrl("https://www.google.com"));
 
-    int index = tabWidget->addTab(view, "New Tab");
+    int index = tabWidget->addTab(view, "Tab " + QString::number(tabWidget->count() + 1));
+
     tabWidget->setCurrentIndex(index);
 
     connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
