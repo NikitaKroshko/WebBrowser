@@ -15,12 +15,14 @@ public:
     ~MainWindow();
 
 private slots:
+    void newTab();
     void navigateToUrl();
     void updateUrlBar(const QUrl &url);
 
 private:
     QLineEdit *urlBar;
-    QWebEngineView *view;
+    QTabWidget *tabWidget;
+    QWebEngineView* currentView() const;
 };
 
 #endif
