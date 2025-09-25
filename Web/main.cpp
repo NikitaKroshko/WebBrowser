@@ -1,9 +1,22 @@
-#include "mainwindow.h"
+/**
+ * @file main.cpp
+ * @brief Application setup for mainwindow
+ *
+ * Sets up QApplication and launches the main window.
+ */
 
+#include "mainwindow.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
 
+/**
+ * @brief Main entry point for the application.
+ *
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line arguments array.
+ * @return int Exit status code from the Qt event loop.
+ */
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -17,7 +30,11 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    // Show mainwindow
     MainWindow w;
     w.show();
+
+    // Loop
     return a.exec();
 }
