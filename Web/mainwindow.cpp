@@ -1,6 +1,6 @@
 /**
  * @file mainwindow.cpp
- * @brief Implementation of MainWindow: a simple tabbed web browser using Qt.
+ * @brief A tabbed web browser using Qt.
  *
  * Provides navigation toolbar, URL bar, and tabbed browsing with QWebEngineView.
  */
@@ -44,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *newTabAction = toolbar->addAction("+");
     connect(newTabAction, &QAction::triggered, this, &MainWindow::newTab);
 
-    // URL bar
     urlBar = new QLineEdit(this);
     urlBar->setPlaceholderText("Enter URL and press Enter...");
     toolbar->addWidget(urlBar);
@@ -64,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {}
 
 /**
- * @brief Open a new tab (defaults to Google).
+ * @brief Open a new tab, the default is google.com.
  */
 void MainWindow::newTab()
 {
@@ -90,13 +89,13 @@ void MainWindow::newTab()
 }
 
 /**
- * @brief Navigate to URL typed in the URL bar.
- *        Defaults to https:// if no scheme is given.
+ * @brief Navigate to URL typed in the URL bar, uses http as default.
  */
 void MainWindow::navigateToUrl()
 {
     if (!currentView()) return;
 
+    // Handle users inputting without http
     QString urlText = urlBar->text();
     if (!urlText.startsWith("http://") && !urlText.startsWith("https://"))
         urlText.prepend("https://");
@@ -105,7 +104,7 @@ void MainWindow::navigateToUrl()
 }
 
 /**
- * @brief Keep URL bar in sync with current page.
+ * @brief Keep URL in sync with page.
  */
 void MainWindow::updateUrlBar(const QUrl &url)
 {
@@ -113,7 +112,7 @@ void MainWindow::updateUrlBar(const QUrl &url)
 }
 
 /**
- * @brief Return the currently active browser tab.
+ * @brief Returns the active browser tab.
  */
 QWebEngineView* MainWindow::currentView() const
 {
