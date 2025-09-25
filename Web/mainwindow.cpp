@@ -1,20 +1,30 @@
+/**
+ * @file mainwindow.cpp
+ * @brief Implementation of MainWindow: a simple tabbed web browser using Qt.
+ *
+ * Provides navigation toolbar, URL bar, and tabbed browsing with QWebEngineView.
+ */
+
 #include "mainwindow.h"
 #include <QToolBar>
 #include <QAction>
 #include <QUrl>
 
+/**
+ * @brief Construct the MainWindow with toolbar, URL bar, and tab widget.
+ */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-
     resize(1200, 800);
 
+    // Central widget
     tabWidget = new QTabWidget(this);
     tabWidget->setTabsClosable(true);
     setCentralWidget(tabWidget);
 
+    // Navigation toolbar
     QToolBar *toolbar = addToolBar("Navigation");
-
 
     QAction *backAction = toolbar->addAction("⟵");
     connect(backAction, &QAction::triggered, this, [this] {
@@ -34,68 +44,77 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *newTabAction = toolbar->addAction("+");
     connect(newTabAction, &QAction::triggered, this, &MainWindow::newTab);
 
-
+    // URL bar
     urlBar = new QLineEdit(this);
     urlBar->setPlaceholderText("Enter URL and press Enter...");
     toolbar->addWidget(urlBar);
-
     connect(urlBar, &QLineEdit::returnPressed, this, &MainWindow::navigateToUrl);
 
-
+    // Tab close handling
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, [this](int index) {
         QWidget *tab = tabWidget->widget(index);
         tabWidget->removeTab(index);
         delete tab;
     });
 
+    // Initial open
     newTab();
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() {}
 
+/**
+ * @brief Open a new tab (defaults to Google).
+ */
 void MainWindow::newTab()
 {
     QWebEngineView *view = new QWebEngineView;
     view->setUrl(QUrl("https://www.google.com"));
 
     int index = tabWidget->addTab(view, "Tab " + QString::number(tabWidget->count() + 1));
-
     tabWidget->setCurrentIndex(index);
 
+    // Sync URL with page
     connect(view, &QWebEngineView::urlChanged, this, &MainWindow::updateUrlBar);
-    connect(view, &QWebEngineView::titleChanged, this, [this, view, index](const QString &title) {
+
+    // continuously update title
+    connect(view, &QWebEngineView::titleChanged, this, [this, view](const QString &title) {
         int idx = tabWidget->indexOf(view);
         if (idx != -1) {
-            QString baseTitle = "New Tab " + QString::number(idx + 1);
-            if (title.contains("Google", Qt::CaseInsensitive)) {
-                tabWidget->setTabText(idx, baseTitle);
-            } else {
+            if (title.contains("Google", Qt::CaseInsensitive))
+                tabWidget->setTabText(idx, "New Tab " + QString::number(idx + 1));
+            else
                 tabWidget->setTabText(idx, title);
-            }
         }
     });
-
 }
 
+/**
+ * @brief Navigate to URL typed in the URL bar.
+ *        Defaults to https:// if no scheme is given.
+ */
 void MainWindow::navigateToUrl()
 {
     if (!currentView()) return;
 
     QString urlText = urlBar->text();
-    if (!urlText.startsWith("http://") && !urlText.startsWith("https://")) {
+    if (!urlText.startsWith("http://") && !urlText.startsWith("https://"))
         urlText.prepend("https://");
-    }
 
     currentView()->setUrl(QUrl(urlText));
 }
 
+/**
+ * @brief Keep URL bar in sync with current page.
+ */
 void MainWindow::updateUrlBar(const QUrl &url)
 {
     urlBar->setText(url.toString());
 }
 
+/**
+ * @brief Return the currently active browser tab.
+ */
 QWebEngineView* MainWindow::currentView() const
 {
     return qobject_cast<QWebEngineView*>(tabWidget->currentWidget());
