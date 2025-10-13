@@ -4,12 +4,10 @@
  *
  * Sets up QApplication and launches the main window.
  */
-
 #include "mainwindow.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
-
 /**
  * @brief Main entry point for the application.
  *
