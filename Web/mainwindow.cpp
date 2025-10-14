@@ -4,12 +4,10 @@
  *
  * Provides navigation toolbar, URL bar, and tabbed browsing with QWebEngineView.
  */
-
 #include "mainwindow.h"
 #include <QToolBar>
 #include <QAction>
 #include <QUrl>
-
 /**
  * @brief Construct the MainWindow with toolbar, URL bar, and tab widget.
  */
